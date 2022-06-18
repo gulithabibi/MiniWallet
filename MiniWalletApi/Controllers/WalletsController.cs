@@ -49,7 +49,7 @@ namespace MiniWalletApi.Controllers
 
 
         //GET api/Wallets/desposits
-        [HttpGet()]
+        [HttpPost()]
         [Route("deposits")]
         public ActionResult<Customer> Deposits(Guid id)
         {

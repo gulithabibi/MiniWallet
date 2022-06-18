@@ -32,11 +32,14 @@ namespace MiniWalletApi
             services.AddSwaggerGen();
 
             services.AddDbContext<MiniWalletContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("MiniWalletConnection")));
-            services.AddControllers();
 
             services.AddScoped<ICustomerRespository, CustomerRepository>();
             services.AddScoped<IWalletRespository, WalletRepository>();
             services.AddScoped<IDepositRespository, DepositRepository>();
+
+            services.AddControllers();
+
+           
         }
 
         private object CustomersRespository(IServiceProvider arg)
@@ -62,7 +65,7 @@ namespace MiniWalletApi
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
