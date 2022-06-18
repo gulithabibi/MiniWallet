@@ -67,3 +67,12 @@ C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\Swash
 C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\obj\Debug\netcoreapp3.1\MiniWalletApi.MvcApplicationPartsAssemblyInfo.cs
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\EntityFramework.SqlServer.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\EntityFramework.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\System.CodeDom.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\System.Data.SqlClient.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\runtimes\win-arm64\native\sni.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\sni.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\sni.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
