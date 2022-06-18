@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\MiniWalletApi",
+    "\\MiniWalletApi\\Controllers",
+    "\\MiniWalletApi\\Libraries",
+    "\\MiniWalletApi\\Models",
+    "\\MiniWalletApi\\Repositories",
+    "\\MiniWalletApi\\Repositories\\Interfaces"
+  ],
+  "SelectedNode": "\\MiniWalletApi\\Repositories\\CustomerRepository.cs",
+  "PreviewInSolutionExplorer": false
+}
