@@ -46,7 +46,6 @@ namespace MiniWalletApi.Repositories
 
         public async Task<Customer> FinfByToken(string token)
         {
-            
             try
             {
                 var cust = new Customer();

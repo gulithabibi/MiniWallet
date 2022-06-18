@@ -2,6 +2,7 @@
 using MiniWalletApi.Libraries;
 using MiniWalletApi.Models;
 using MiniWalletApi.Repositories.Interfaces;
+using MiniWalletApi.Constans;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,6 +75,25 @@ namespace MiniWalletApi.Repositories
             {
                 throw new System.NotImplementedException();
             }
+        }
+
+        public async Task<Wallet> EnableWallet(string token)
+        {
+            Wallet wallet=null;
+            ICustomerRespository custRepo = new CustomerRepository(_context);
+            var customer = custRepo.FinfByToken(token).Result;
+            if (customer == null) return wallet;
+
+            wallet = _context.Wallets.Where(x => x.OwnedBy == customer.Id).FirstOrDefault();
+            if (wallet == null) return wallet;
+
+            if (wallet.Status !=Common.WalletStatus.Enabled)
+            {
+                wallet.Status = Common.WalletStatus.Enabled;
+                wallet=await Update(wallet);
+            }
+
+            return wallet;
         }
 
         public async Task<Wallet> Create(Wallet wallet)

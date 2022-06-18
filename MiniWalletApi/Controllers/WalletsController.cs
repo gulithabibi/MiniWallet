@@ -27,12 +27,13 @@ namespace MiniWalletApi.Controllers
 
         //POST api/Wallets
         [HttpGet]
-        public ActionResult Post()
+        public ActionResult EnableWallet()
         {
             try
             {
                 string token = "6b3f7dc70abe8aed3e56658b86fa508b472bf238";
-                var wallet = _repository.FindByToken(token).Result;
+
+                var wallet = _repository.EnableWallet(token).Result;
                 if (wallet == null)
                 {
                     return NotFound();
@@ -44,6 +45,8 @@ namespace MiniWalletApi.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+
 
 
 

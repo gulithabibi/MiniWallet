@@ -13,6 +13,8 @@ namespace MiniWalletApi.Repositories.Interfaces
 
         Task<Wallet> FindByOwner(Guid custId);
         Task<Wallet> FindByToken(string token);
+
+        Task<Wallet> EnableWallet(string token);
         Task<Wallet> Create(Wallet deposit);
         Task<Wallet> Update(Wallet deposit);
         Task Delete(Guid id);
