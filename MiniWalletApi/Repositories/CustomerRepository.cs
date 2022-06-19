@@ -20,17 +20,17 @@ namespace MiniWalletApi.Repositories
             _context = context;
         }
 
-        public async Task<BaseApiResponse> Find()
+        public async Task<List<Customer>> Find()
         {
             try
             {
                 var customers = _context.Customers.ToList();
 
-                return BaseApiResponse.GetOkResponse(customers);
+                return customers;
             }
             catch (Exception ex)
             {
-                return BaseApiResponse.GetErrorResponse(ex.Message, HttpStatusCode.InternalServerError);
+                throw new System.Exception(ex.Message);
             }
         }
 
@@ -41,9 +41,9 @@ namespace MiniWalletApi.Repositories
                 var customer = _context.Customers.Where(x => x.Id == id).FirstOrDefault();
                 return customer;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new System.NotImplementedException();
+                throw new System.Exception(ex.Message);
             }
         } 
 
@@ -63,9 +63,9 @@ namespace MiniWalletApi.Repositories
 
                 return cust;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new System.NotImplementedException();
+                throw new System.Exception(ex.Message);
             }
 
         }

@@ -29,9 +29,9 @@ namespace MiniWalletApi.Repositories
                 var wallets = _context.Wallets.ToList();
                 return wallets;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new System.NotImplementedException();
+                throw new System.Exception(ex.Message);
             }
         }
 
@@ -42,9 +42,9 @@ namespace MiniWalletApi.Repositories
                 var customer = _context.Wallets.Where(x => x.Id == id).FirstOrDefault();
                 return customer;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new System.NotImplementedException();
+                throw new System.Exception(ex.Message);
             }
         }
 
@@ -55,27 +55,9 @@ namespace MiniWalletApi.Repositories
                 var wallet = _context.Wallets.Where(x => x.OwnedBy== custId).FirstOrDefault();
                 return wallet;
             }
-            catch (Exception)
-            {
-                throw new System.NotImplementedException();
-            }
-        }
-
-        public async Task<Wallet> FindByToken(string token)
-        {
-            try
-            {
-                var wallet = new Wallet();
-                var auth = _context.PersonalAccessTokens.Where(x => x.Token == token).FirstOrDefault();
-                if (auth != null)
-                {
-                    wallet = _context.Wallets.Where(x => x.OwnedBy == auth.Id).FirstOrDefault();
-                }
-                return wallet;
-            }
             catch (Exception ex)
             {
-                throw new System.NotImplementedException();
+                throw new System.Exception(ex.Message);
             }
         }
 

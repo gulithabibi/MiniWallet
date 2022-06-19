@@ -14,7 +14,6 @@ namespace MiniWalletApi.Repositories.Interfaces
         Task<Wallet> FindByID(Guid id);
 
         Task<Wallet> FindByOwner(Guid custId);
-        Task<Wallet> FindByToken(string token);
 
         Task<BaseApiResponse> EnableWallet(string token);
 
