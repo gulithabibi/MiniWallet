@@ -14,5 +14,15 @@ namespace MiniWalletApi.Constans
 			// TODO: Add constructor logic here
 			//
 		}
+
+		public static class NegativeMessage
+        {
+			public const string WalletNotFound = "Wallet not found";
+			public const string WalletAlreadyEnable= "Status wallet already enabled";
+			public const string ReferenceDuplicated = "Reference ID duplicated";
+			public const string WalletDisabled = "Currently wallet disabled";
+			public const string BalanceNotEnough = "Balance not enough";
+			
+		}
 	}
 }

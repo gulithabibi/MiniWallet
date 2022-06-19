@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MiniWalletApi.Constans;
+using MiniWalletApi.Dtos;
 using MiniWalletApi.Libraries;
 using MiniWalletApi.Models;
 using MiniWalletApi.Repositories.Interfaces;
@@ -39,8 +41,18 @@ namespace MiniWalletApi.Repositories
             //}
         }
 
-        public async Task<Deposit> Create(Deposit deposit)
+        public async Task<Deposit> Create(DepositRqDto req)
         {
+            var deposit = new Deposit()
+            {
+                Id = Guid.NewGuid(),
+                DepositedBy = req.CustomerId,
+                Status = HttpStatusConstant.StatusType.Success,
+                DepositedAt = DateTime.UtcNow,
+                Amount = req.Amount,
+                ReferenceID = req.Reference_id
+            };
+
             _context.Deposits.Add(deposit);
             await _context.SaveChangesAsync();
 

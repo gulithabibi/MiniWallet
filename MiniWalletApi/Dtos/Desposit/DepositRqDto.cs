@@ -7,6 +7,7 @@ namespace MiniWalletApi.Dtos
 {
     public class DepositRqDto
     {
+        public Guid CustomerId { get; set; }
         public Decimal Amount { get; set; }
         public Guid Reference_id { get; set; }
 

@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MiniWalletApi.Constans;
+using MiniWalletApi.Dtos;
 using MiniWalletApi.Libraries;
 using MiniWalletApi.Models;
 using MiniWalletApi.Repositories.Interfaces;
@@ -29,8 +31,18 @@ namespace MiniWalletApi.Repositories
             return await _context.Withdrawals.FindAsync(id);
         }
 
-        public async Task<Withdrawal> Create(Withdrawal withdrawal)
+        public async Task<Withdrawal> Create(WithdrawalRqDto req)
         {
+            var withdrawal = new Withdrawal()
+            {
+                Id = Guid.NewGuid(),
+                WithdrawnBy = req.CustomerId,
+                Status = HttpStatusConstant.StatusType.Success,
+                WithdrawnAt = DateTime.UtcNow,
+                Amount = req.Amount,
+                ReferenceID = req.Reference_id
+            };
+
             _context.Withdrawals.Add(withdrawal);
             await _context.SaveChangesAsync();
 

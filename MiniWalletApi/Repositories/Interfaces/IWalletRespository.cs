@@ -16,8 +16,6 @@ namespace MiniWalletApi.Repositories.Interfaces
         Task<Wallet> FindByOwner(Guid custId);
         Task<Wallet> FindByToken(string token);
 
-        Task<decimal> GetBalance(string auth);
-
         Task<BaseApiResponse> EnableWallet(string token);
 
         Task<BaseApiResponse> DisableWallet(DisableWalletRqDto value);

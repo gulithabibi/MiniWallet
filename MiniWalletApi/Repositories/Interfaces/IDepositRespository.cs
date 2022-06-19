@@ -1,4 +1,5 @@
-﻿using MiniWalletApi.Models;
+﻿using MiniWalletApi.Dtos;
+using MiniWalletApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace MiniWalletApi.Repositories.Interfaces
     {
         Task<IEnumerable<Deposit>> Find();
         Task<Deposit> FindByID(Guid id);
-        Task<Deposit> Create(Deposit deposit);
+        Task<Deposit> Create(DepositRqDto req);
         Task<Deposit>Update(Deposit deposit);
         Task Delete(Guid id);
     }
