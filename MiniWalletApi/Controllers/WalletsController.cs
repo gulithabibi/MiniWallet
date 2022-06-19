@@ -9,12 +9,16 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using MiniWalletApi.Libraries;
+using Microsoft.AspNetCore.Authorization;
+using CoreApiResponse;
+using MiniWalletApi.Dtos;
+using MiniWalletApi.Constans;
 
 namespace MiniWalletApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class WalletsController : ControllerBase
+    //[Route("api/[controller]")]
+    public class WalletsController : BaseController
     {
 
         private readonly IWalletRespository _repository;
@@ -26,74 +30,157 @@ namespace MiniWalletApi.Controllers
         }    
 
         //POST api/Wallets
-        [HttpGet]
-        public ActionResult EnableWallet()
+        [HttpPost]
+        //[Authorize]
+        [Route("api/v1/wallet")]
+        public IActionResult EnableWallet()
         {
             try
             {
-                string token = "6b3f7dc70abe8aed3e56658b86fa508b472bf238";
+
+                var token = Request.Headers["Authorization"];
 
                 var wallet = _repository.EnableWallet(token).Result;
                 if (wallet == null)
                 {
-                    return NotFound();
+                    return CustomResult("Status wallet already enabled",HttpStatusCode.BadRequest);
                 }
-                return Ok(wallet);
+                return CustomResult(wallet,HttpStatusCode.Created);
             }
             catch(Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+                return CustomResult(ex.Message,HttpStatusCode.InternalServerError);
             }
         }
 
-
-
-
-
-
-        //GET api/Wallets/desposits
-        [HttpPost()]
-        [Route("deposits")]
-        public ActionResult<Customer> Deposits(Guid id)
+        //POST api/Wallets
+        [HttpGet]
+        //[Authorize]
+        [Route("api/v1/wallet")]
+        public IActionResult ViewBalance()
         {
             try
             {
-                var customer = _repository.FindByID(id);
-                if (customer == null)
+                var token = Request.Headers["Authorization"];
+
+                var wallet = _repository.ViewBalance(token).Result;
+                if (wallet == null)
                 {
-                    return NotFound();
+                    return CustomResult(HttpStatusCode.NotFound);
                 }
-                return Ok(customer);
+                return CustomResult(wallet);
+            }
+            catch (Exception ex)
+            {
+                return CustomResult(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        //GET api/Wallets/desposits
+        [HttpPost()]
+        [Route("api/v1/wallet/deposits")]
+        public IActionResult AddVirtualMoney(DepositRqDto value)
+        {
+            try
+            {
+                
+                value.Authorization= Request.Headers["Authorization"];
+
+                //check wallet enable
+                if (!isEnable(value.Authorization))
+                {
+                    return CustomResult("Currently wallet is disabled.", HttpStatusCode.BadRequest);
+                }
+
+                var deposit = _repository.AddVirtualMoney(value).Result;
+                if (deposit == null)
+                {
+                    return CustomResult("Reference ID duplicated",HttpStatusCode.BadRequest);
+                }
+                return CustomResult(deposit,HttpStatusCode.Created);
 
             }
             catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+                return CustomResult(ex.Message, HttpStatusCode.InternalServerError);
             }
         }
 
-        //GET api/Wallets/5
-        [HttpGet("{id}")]
-        public ActionResult <Customer> GetByID(Guid id)
+        //GET api/Wallets/withdrawals
+        [HttpPost()]
+        [Route("api/v1/wallet/withdrawals")]
+        public IActionResult UseVirtualMoney(WithdrawalRqDto value)
         {
             try
             {
-                var customer = _repository.FindByID(id);
-                if (customer == null)
-                {
-                    return NotFound();
-                }
-                return Ok(customer);
+                value.Authorization = Request.Headers["Authorization"];
 
-            }catch(Exception ex)
+                //check wallet enable
+                if (!isEnable(value.Authorization))
+                {
+                    return CustomResult("Currently wallet is disabled.", HttpStatusCode.BadRequest);
+                }
+
+                //check balance
+                var balance = _repository.GetBalance(value.Authorization).Result;
+                if (balance < value.Amount)
+                    return CustomResult("Balance not enough", HttpStatusCode.BadRequest);
+                
+
+                var deposit = _repository.UseVirtualMoney(value).Result;
+                if (deposit == null)
+                {
+                    return CustomResult("Reference ID duplicated", HttpStatusCode.BadRequest);
+                }
+                return CustomResult(deposit,HttpStatusCode.Created);
+
+            }
+            catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+                return CustomResult(ex.Message, HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ActionResult<List<Customer>>> Add()
+        //GET api/v1/Wallets/
+        [HttpPatch()]
+        [Route("api/v1/wallet")]
+        public IActionResult DisablewWallet(DisableWalletRqDto value)
         {
-            return Ok();
+            try
+            {
+                value.Authorization = Request.Headers["Authorization"];
+
+                var wallet = _repository.FindByToken(value.Authorization).Result;
+                if (wallet == null) return CustomResult(HttpStatusCode.BadRequest);
+
+
+                if (value.Is_disabled)
+                {
+                    wallet.Status = CommonConstant.WalletStatus.Disabled;
+                    wallet=_repository.Update(wallet).Result;
+                }
+
+                return CustomResult(wallet);
+            }
+            catch (Exception ex)
+            {
+                return CustomResult(ex.Message, HttpStatusCode.InternalServerError);
+            }
         }
+
+
+        private bool isEnable(string auth)
+        {
+            var wallet = _repository.FindByToken(auth).Result;
+            if (wallet.Status != CommonConstant.WalletStatus.Enabled)
+            {
+                return false;
+            }
+
+            return true;
+
+        }
+
+
     }
 }

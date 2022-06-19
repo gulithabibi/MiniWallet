@@ -76,3 +76,8 @@ C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\runti
 C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\sni.dll
 C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\CoreApiResponse.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\JSend.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\Microsoft.DotNet.PlatformAbstractions.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyModel.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\System.Text.Json.dll

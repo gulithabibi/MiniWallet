@@ -1,4 +1,5 @@
-﻿using MiniWalletApi.Models;
+﻿using MiniWalletApi.Dtos;
+using MiniWalletApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace MiniWalletApi.Repositories.Interfaces
         Task<List<Customer>> Find();
         Task<Customer> FindByID(Guid id);
         Task<Customer> FinfByToken(string token);
+        Task<InitRsDto> GetInit(Guid custId);
     }
 }

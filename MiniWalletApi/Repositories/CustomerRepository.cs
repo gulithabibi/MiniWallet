@@ -1,4 +1,5 @@
-﻿using MiniWalletApi.Libraries;
+﻿using MiniWalletApi.Dtos;
+using MiniWalletApi.Libraries;
 using MiniWalletApi.Models;
 using MiniWalletApi.Repositories.Interfaces;
 using System;
@@ -44,6 +45,8 @@ namespace MiniWalletApi.Repositories
             }
         } 
 
+
+
         public async Task<Customer> FinfByToken(string token)
         {
             try
@@ -54,6 +57,7 @@ namespace MiniWalletApi.Repositories
                 {
                     cust = _context.Customers.Where(x => x.Id == auth.Id).FirstOrDefault();
                 }
+
                 return cust;
             }
             catch (Exception)
@@ -61,6 +65,41 @@ namespace MiniWalletApi.Repositories
                 throw new System.NotImplementedException();
             }
 
+        }
+
+        public async Task<InitRsDto> GetInit(Guid custId)
+        {
+            try
+            {
+                InitRsDto resp = null;
+
+                var accessToken = _context.PersonalAccessTokens.Where(x => x.Id == custId).FirstOrDefault();
+                if (accessToken != null) {
+                    _context.PersonalAccessTokens.Remove(accessToken);
+                    await _context.SaveChangesAsync();
+                }
+
+                string token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+                accessToken = new PersonalAccessToken()
+                {
+                    Id = custId,
+                    Name = "MiniWalletToken",
+                    Token = token,
+                    LastUsedAt = DateTime.UtcNow
+                };
+                _context.PersonalAccessTokens.Add(accessToken);
+                await _context.SaveChangesAsync();
+
+                resp = new InitRsDto();
+                resp.Token = token;
+
+                return resp;
+
+            }
+            catch(Exception ex)
+            {
+                throw new System.Exception(ex.Message);
+            }
         }
        
     }
