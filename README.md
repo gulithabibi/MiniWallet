@@ -1,7 +1,7 @@
 # MiniWallet
 
 #Info
-- For response structure i'm not using library JSend but the response similar like JSend.
+- For response structure custom similar like structure JSend.
 - For testing, you can import collection, filename: MiniWallet.postman_collection.json
 
 #Note
