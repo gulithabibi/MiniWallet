@@ -1,30 +1,53 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CoreApiResponse;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MiniWalletApi.Libraries;
+using MiniWalletApi.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace MiniWalletApi.Controllers
 {
     [ApiController]
-    public abstract class BaseApiController : ControllerBase
+    public abstract class BaseApiController : BaseController
     {
 
-        protected IActionResult Getresult<T>(T response)
+        CustomerRepository customerRepository;
+
+        protected IActionResult GetResult(BaseApiResponse  response)
         {
-            BaseApiResponse resp = new BaseApiResponse();
 
-           // resp.Status=HttpRespo
+            if(response.HttpStatus== HttpStatusCode.OK)
+            {
+                return Ok(response);
+            }
+            if (response.HttpStatus == HttpStatusCode.Created)
+            {
+                return Created("",response);
+            }
+            if (response.HttpStatus == HttpStatusCode.BadRequest)
+            {
+                return BadRequest(response);
+            }
+            if (response.HttpStatus == HttpStatusCode.NotFound)
+            {
+                return NotFound(response);
+            }
+            if (response.HttpStatus == HttpStatusCode.Unauthorized)
+            {
+                return Unauthorized(response);
+            }
+            else
+            {
+                return BadRequest(response);
+            }
+          
 
-            return null;
+
+            
         }
-    }
-
-    public class BaseApiResponse
-    {
-        public string Data { get; set; }
-        public string Status { get; set; }
     }
 }

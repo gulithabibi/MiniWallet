@@ -81,3 +81,7 @@ C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\JSend
 C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\Microsoft.DotNet.PlatformAbstractions.dll
 C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyModel.dll
 C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\System.Text.Json.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.JsonPatch.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Data\Gulit\Dev\.NET\MiniWalletApi\MiniWalletApi\bin\Debug\netcoreapp3.1\Newtonsoft.Json.Bson.dll

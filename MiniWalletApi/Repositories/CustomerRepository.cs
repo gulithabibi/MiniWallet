@@ -5,6 +5,7 @@ using MiniWalletApi.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace MiniWalletApi.Repositories
@@ -19,16 +20,17 @@ namespace MiniWalletApi.Repositories
             _context = context;
         }
 
-        public async Task<List<Customer>> Find()
+        public async Task<BaseApiResponse> Find()
         {
             try
             {
                 var customers = _context.Customers.ToList();
-                return customers;
+
+                return BaseApiResponse.GetOkResponse(customers);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new System.NotImplementedException();
+                return BaseApiResponse.GetErrorResponse(ex.Message, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -51,10 +53,11 @@ namespace MiniWalletApi.Repositories
         {
             try
             {
-                var cust = new Customer();
+                Customer cust = null;
                 var auth = _context.PersonalAccessTokens.Where(x => x.Token == token).FirstOrDefault();
                 if (auth != null)
                 {
+                    cust = new Customer();
                     cust = _context.Customers.Where(x => x.Id == auth.Id).FirstOrDefault();
                 }
 
@@ -67,7 +70,7 @@ namespace MiniWalletApi.Repositories
 
         }
 
-        public async Task<InitRsDto> GetInit(Guid custId)
+        public async Task<BaseApiResponse> GetInit(Guid custId)
         {
             try
             {
@@ -79,6 +82,7 @@ namespace MiniWalletApi.Repositories
                     await _context.SaveChangesAsync();
                 }
 
+                //generate token
                 string token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
                 accessToken = new PersonalAccessToken()
                 {
@@ -87,18 +91,19 @@ namespace MiniWalletApi.Repositories
                     Token = token,
                     LastUsedAt = DateTime.UtcNow
                 };
+
                 _context.PersonalAccessTokens.Add(accessToken);
                 await _context.SaveChangesAsync();
 
                 resp = new InitRsDto();
                 resp.Token = token;
 
-                return resp;
+                return BaseApiResponse.GetCreatedResponse(resp);
 
             }
             catch(Exception ex)
             {
-                throw new System.Exception(ex.Message);
+                return BaseApiResponse.GetErrorResponse(ex.Message,HttpStatusCode.InternalServerError);
             }
         }
        

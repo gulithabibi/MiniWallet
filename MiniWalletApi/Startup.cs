@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,6 +40,12 @@ namespace MiniWalletApi
             services.AddScoped<IWithdrawalRespository, WithdrawalRepository>();
 
             services.AddControllers();
+
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //    .AddJwtBearer(opt=>
+            //    {
+            //        opt.Audience=Configuration[]
+            //    })
 
            
         }

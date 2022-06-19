@@ -18,7 +18,7 @@ namespace MiniWalletApi.Controllers
 {
     [ApiController]
     //[Route("api/v1/[controller]")]
-    public class AuthController : BaseController
+    public class AuthController : BaseApiController
     {
 
         //private CustomersRepository _custRepository = new CustomersRepository();
@@ -35,21 +35,8 @@ namespace MiniWalletApi.Controllers
         [Route("api/v1/init")]
         public IActionResult Init(InitRqDto value)
         {
-            try
-            {
-                var resp = _repository.GetInit(value.Customer_xid).Result;
-                if (resp == null)
-                {
-                    return CustomResult(HttpStatusCode.NotFound);
-                }
-
-                return CustomResult(resp,HttpStatusCode.Created);
-
-            }
-            catch(Exception ex)
-            {
-                return CustomResult(ex.Message, HttpStatusCode.InternalServerError);
-            }
+            var resp = _repository.GetInit(value.Customer_xid).Result;
+            return GetResult(resp);
         }
     }
 }

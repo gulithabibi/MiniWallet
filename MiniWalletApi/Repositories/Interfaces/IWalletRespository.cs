@@ -1,4 +1,5 @@
 ﻿using MiniWalletApi.Dtos;
+using MiniWalletApi.Libraries;
 using MiniWalletApi.Models;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,15 @@ namespace MiniWalletApi.Repositories.Interfaces
 
         Task<decimal> GetBalance(string auth);
 
-        Task<Wallet> EnableWallet(string token);
+        Task<BaseApiResponse> EnableWallet(string token);
 
-        Task<Wallet> ViewBalance(string token);
+        Task<BaseApiResponse> DisableWallet(DisableWalletRqDto value);
 
-        Task<Deposit> AddVirtualMoney(DepositRqDto value);
+        Task<BaseApiResponse> ViewBalance(string token);
 
-        Task<Withdrawal> UseVirtualMoney(WithdrawalRqDto value);
+        Task<BaseApiResponse> AddVirtualMoney(DepositRqDto value);
+
+        Task<BaseApiResponse> UseVirtualMoney(WithdrawalRqDto value);
 
         Task<Wallet> Create(Wallet deposit);
         Task<Wallet> Update(Wallet deposit);

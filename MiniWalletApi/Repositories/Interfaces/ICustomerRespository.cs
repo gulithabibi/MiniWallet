@@ -1,4 +1,5 @@
 ﻿using MiniWalletApi.Dtos;
+using MiniWalletApi.Libraries;
 using MiniWalletApi.Models;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,9 @@ namespace MiniWalletApi.Repositories.Interfaces
 {
     public interface ICustomerRespository
     {
-        Task<List<Customer>> Find();
+        Task<BaseApiResponse> Find();
         Task<Customer> FindByID(Guid id);
         Task<Customer> FinfByToken(string token);
-        Task<InitRsDto> GetInit(Guid custId);
+        Task<BaseApiResponse> GetInit(Guid custId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using MiniWalletApi.Libraries;
 using MiniWalletApi.Models;
 using MiniWalletApi.Repositories;
 using MiniWalletApi.Repositories.Interfaces;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 namespace MiniWalletApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class CustomersController : BaseApiController
     {
 
@@ -26,32 +27,14 @@ namespace MiniWalletApi.Controllers
             _repository = repository;
 
         }
-        public IActionResult Index()
-        {
-           // SqlConnection conn = SqlConnection("");
-
-            return Ok();
-        }
 
         //GET api/customers
         [HttpGet]
         //[Authorize]
-        public ActionResult GetAll()
+        public IActionResult GetAll()
         {
-            try
-            {
-                var cust = _repository.Find().Result;
-                if (cust == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(cust);
-            }
-            catch(Exception ex)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
-            }
+                var resp = _repository.Find().Result;                
+                return GetResult(resp);
         }
 
         //GET api/customers/5

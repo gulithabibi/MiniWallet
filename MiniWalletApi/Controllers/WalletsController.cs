@@ -18,7 +18,7 @@ namespace MiniWalletApi.Controllers
 {
     [ApiController]
     //[Route("api/[controller]")]
-    public class WalletsController : BaseController
+    public class WalletsController : BaseApiController
     {
 
         private readonly IWalletRespository _repository;
@@ -35,22 +35,10 @@ namespace MiniWalletApi.Controllers
         [Route("api/v1/wallet")]
         public IActionResult EnableWallet()
         {
-            try
-            {
+            var token = Request.Headers["Authorization"];
 
-                var token = Request.Headers["Authorization"];
-
-                var wallet = _repository.EnableWallet(token).Result;
-                if (wallet == null)
-                {
-                    return CustomResult("Status wallet already enabled",HttpStatusCode.BadRequest);
-                }
-                return CustomResult(wallet,HttpStatusCode.Created);
-            }
-            catch(Exception ex)
-            {
-                return CustomResult(ex.Message,HttpStatusCode.InternalServerError);
-            }
+            var resp = _repository.EnableWallet(token).Result;
+            return GetResult(resp);
         }
 
         //POST api/Wallets
@@ -59,21 +47,9 @@ namespace MiniWalletApi.Controllers
         [Route("api/v1/wallet")]
         public IActionResult ViewBalance()
         {
-            try
-            {
-                var token = Request.Headers["Authorization"];
-
-                var wallet = _repository.ViewBalance(token).Result;
-                if (wallet == null)
-                {
-                    return CustomResult(HttpStatusCode.NotFound);
-                }
-                return CustomResult(wallet);
-            }
-            catch (Exception ex)
-            {
-                return CustomResult(ex.Message, HttpStatusCode.InternalServerError);
-            }
+            var token = Request.Headers["Authorization"];
+            var wallet = _repository.ViewBalance(token).Result;
+            return GetResult(wallet);
         }
 
         //GET api/Wallets/desposits
@@ -81,29 +57,9 @@ namespace MiniWalletApi.Controllers
         [Route("api/v1/wallet/deposits")]
         public IActionResult AddVirtualMoney(DepositRqDto value)
         {
-            try
-            {
-                
                 value.Authorization= Request.Headers["Authorization"];
-
-                //check wallet enable
-                if (!isEnable(value.Authorization))
-                {
-                    return CustomResult("Currently wallet is disabled.", HttpStatusCode.BadRequest);
-                }
-
-                var deposit = _repository.AddVirtualMoney(value).Result;
-                if (deposit == null)
-                {
-                    return CustomResult("Reference ID duplicated",HttpStatusCode.BadRequest);
-                }
-                return CustomResult(deposit,HttpStatusCode.Created);
-
-            }
-            catch (Exception ex)
-            {
-                return CustomResult(ex.Message, HttpStatusCode.InternalServerError);
-            }
+                var resp = _repository.AddVirtualMoney(value).Result;
+            return GetResult(resp);
         }
 
         //GET api/Wallets/withdrawals
@@ -111,34 +67,11 @@ namespace MiniWalletApi.Controllers
         [Route("api/v1/wallet/withdrawals")]
         public IActionResult UseVirtualMoney(WithdrawalRqDto value)
         {
-            try
-            {
-                value.Authorization = Request.Headers["Authorization"];
+            value.Authorization = Request.Headers["Authorization"];
 
-                //check wallet enable
-                if (!isEnable(value.Authorization))
-                {
-                    return CustomResult("Currently wallet is disabled.", HttpStatusCode.BadRequest);
-                }
+            var resp = _repository.UseVirtualMoney(value).Result;
+            return GetResult(resp);
 
-                //check balance
-                var balance = _repository.GetBalance(value.Authorization).Result;
-                if (balance < value.Amount)
-                    return CustomResult("Balance not enough", HttpStatusCode.BadRequest);
-                
-
-                var deposit = _repository.UseVirtualMoney(value).Result;
-                if (deposit == null)
-                {
-                    return CustomResult("Reference ID duplicated", HttpStatusCode.BadRequest);
-                }
-                return CustomResult(deposit,HttpStatusCode.Created);
-
-            }
-            catch (Exception ex)
-            {
-                return CustomResult(ex.Message, HttpStatusCode.InternalServerError);
-            }
         }
 
         //GET api/v1/Wallets/
@@ -146,41 +79,11 @@ namespace MiniWalletApi.Controllers
         [Route("api/v1/wallet")]
         public IActionResult DisablewWallet(DisableWalletRqDto value)
         {
-            try
-            {
-                value.Authorization = Request.Headers["Authorization"];
+            value.Authorization = Request.Headers["Authorization"];
 
-                var wallet = _repository.FindByToken(value.Authorization).Result;
-                if (wallet == null) return CustomResult(HttpStatusCode.BadRequest);
-
-
-                if (value.Is_disabled)
-                {
-                    wallet.Status = CommonConstant.WalletStatus.Disabled;
-                    wallet=_repository.Update(wallet).Result;
-                }
-
-                return CustomResult(wallet);
-            }
-            catch (Exception ex)
-            {
-                return CustomResult(ex.Message, HttpStatusCode.InternalServerError);
-            }
+            var resp = _repository.DisableWallet(value).Result;
+            return GetResult(resp);
         }
-
-
-        private bool isEnable(string auth)
-        {
-            var wallet = _repository.FindByToken(auth).Result;
-            if (wallet.Status != CommonConstant.WalletStatus.Enabled)
-            {
-                return false;
-            }
-
-            return true;
-
-        }
-
 
     }
 }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MiniWalletApi.Dtos;
+using System.Net;
 
 namespace MiniWalletApi.Repositories
 {
@@ -83,7 +84,8 @@ namespace MiniWalletApi.Repositories
             try
             {
                 decimal balance = 0;
-                ICustomerRespository custRepo = new CustomerRepository(_context);
+
+                var custRepo = new CustomerRepository(_context);
                 var customer = custRepo.FinfByToken(auth).Result;
                 if (customer == null) return balance;
 
@@ -96,74 +98,101 @@ namespace MiniWalletApi.Repositories
             }
         }
 
-        public async Task<Wallet> EnableWallet(string token)
+        public async Task<BaseApiResponse> EnableWallet(string token)
         {
             try
             {
-                Wallet wallet = null;
-                ICustomerRespository custRepo = new CustomerRepository(_context);
+
+                var custRepo = new CustomerRepository(_context);
                 var customer = custRepo.FinfByToken(token).Result;
-                if (customer == null) return wallet;
+                if (customer == null) return BaseApiResponse.GetUnauthorizedResponse();
 
-                wallet = _context.Wallets.Where(x => x.OwnedBy == customer.Id).FirstOrDefault();
-                if (wallet == null) return wallet;
+                Wallet wallet = _context.Wallets.Where(x => x.OwnedBy == customer.Id).FirstOrDefault();
+                if (wallet == null) return BaseApiResponse.GetNotFoundResponse("Wallet not found");
 
-
-                if (wallet.Status == CommonConstant.WalletStatus.Enabled) return null;
-
-
-
+                if (wallet.Status == CommonConstant.WalletStatus.Enabled) 
+                    return BaseApiResponse.GetBadRequstResponse("Status wallet already enabled");
 
                 wallet.Status = CommonConstant.WalletStatus.Enabled;
                 wallet = await Update(wallet);
               
-                return wallet;
+                return BaseApiResponse.GetCreatedResponse(wallet);
             }
             catch(Exception ex)
             {
-                throw new Exception(ex.Message);
+                return BaseApiResponse.GetErrorResponse(ex.Message, HttpStatusCode.InternalServerError);
             }
-           
         }
 
-        public async Task<Wallet> ViewBalance(string token)
+        public async Task<BaseApiResponse> DisableWallet(DisableWalletRqDto value)
         {
             try
             {
-                Wallet wallet = null;
-                ICustomerRespository custRepo = new CustomerRepository(_context);
-                var customer = custRepo.FinfByToken(token).Result;
-                if (customer == null) return wallet;
+                //Check authorized
+                var custRepo = new CustomerRepository(_context);
+                var customer = custRepo.FinfByToken(value.Authorization).Result;
+                if (customer == null) return BaseApiResponse.GetUnauthorizedResponse();
 
-                wallet = _context.Wallets.Where(x => x.OwnedBy == customer.Id).FirstOrDefault();
-                if (wallet == null) return wallet;
 
-                return wallet;
+
+                Wallet wallet = _context.Wallets.Where(x => x.OwnedBy == customer.Id).FirstOrDefault();
+                if (wallet == null) return BaseApiResponse.GetNotFoundResponse("Wallet not found");
+
+                if (value.Is_disabled)
+                {
+                    wallet.Status = CommonConstant.WalletStatus.Disabled;
+                    wallet = await Update(wallet);
+                }
+
+                return BaseApiResponse.GetCreatedResponse(wallet);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return BaseApiResponse.GetErrorResponse(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public async Task<BaseApiResponse> ViewBalance(string token)
+        {
+            try
+            {
+                var custRepo = new CustomerRepository(_context);
+                var customer = custRepo.FinfByToken(token).Result;
+                if (customer == null) return BaseApiResponse.GetUnauthorizedResponse();
+
+                Wallet wallet = _context.Wallets.Where(x => x.OwnedBy == customer.Id).FirstOrDefault();
+                if (wallet == null) return BaseApiResponse.GetNotFoundResponse("Wallet not found");
+
+                return BaseApiResponse.GetOkResponse(wallet);
+            }
+            catch (Exception ex)
+            {
+                return BaseApiResponse.GetErrorResponse(ex.Message, HttpStatusCode.InternalServerError);
             }
 
         }
 
 
 
-        public async Task<Deposit> AddVirtualMoney(DepositRqDto value)
+        public async Task<BaseApiResponse> AddVirtualMoney(DepositRqDto value)
         {
             try
             {
-                Deposit deposit = null;
-                //get cust
+                //Check authorized
                 var access = _context.PersonalAccessTokens.Where(x => x.Token == value.Authorization).FirstOrDefault();
-                if (access == null) return deposit;
+                if (access == null) return BaseApiResponse.GetUnauthorizedResponse();
 
-
+                //Check reference
                 var checkRef = _context.Deposits.Where(x => x.ReferenceID == value.Reference_id).FirstOrDefault();
-                if (checkRef != null) return deposit;
+                if (checkRef != null) return BaseApiResponse.GetBadRequstResponse("Reference ID duplicated");
 
-                //set value
-                deposit = new Deposit()
+                var wallet = FindByOwner(access.Id).Result;
+                if (wallet.Status == CommonConstant.WalletStatus.Disabled)
+                    return BaseApiResponse.GetBadRequstResponse("Currently wallet is disabled.");
+
+
+                //Add  Deposit
+                var deposit = new Deposit()
                 {
                     Id = Guid.NewGuid(),
                     DepositedBy = access.Id,
@@ -175,35 +204,41 @@ namespace MiniWalletApi.Repositories
                 _context.Deposits.Add(deposit);
                 await _context.SaveChangesAsync();
 
-                //update balance
-                var wallet = FindByOwner(access.Id).Result;
+                //update Balance
                 wallet.Balance = wallet.Balance + value.Amount;
                 await Update(wallet);
 
-                return deposit;
+                return BaseApiResponse.GetCreatedResponse(deposit);
 
 
             }catch(Exception ex)
             {
-                throw new Exception(ex.Message);
+                return BaseApiResponse.GetErrorResponse(ex.Message, HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<Withdrawal> UseVirtualMoney(WithdrawalRqDto value)
+        public async Task<BaseApiResponse> UseVirtualMoney(WithdrawalRqDto value)
         {
             try
             {
-                Withdrawal withdrawal = null;
-                //get cust
+                //Check authorized
                 var access = _context.PersonalAccessTokens.Where(x => x.Token == value.Authorization).FirstOrDefault();
-                if (access == null) return withdrawal;
+                if (access == null) return BaseApiResponse.GetUnauthorizedResponse();
 
-
+                //check refernce
                 var checkRef = _context.Withdrawals.Where(x => x.ReferenceID == value.Reference_id).FirstOrDefault();
-                if (checkRef != null) return withdrawal;
+                if (checkRef != null) return BaseApiResponse.GetBadRequstResponse("Reference ID duplicated");
 
-                //set value
-                withdrawal = new Withdrawal()
+                var wallet = FindByOwner(access.Id).Result;
+                if (wallet.Status == CommonConstant.WalletStatus.Disabled)
+                    return BaseApiResponse.GetBadRequstResponse("Currently wallet is disabled.");
+
+
+                if (wallet.Balance < value.Amount)
+                    return BaseApiResponse.GetBadRequstResponse("Balance not enough");
+
+                //Add withdrawal
+                var withdrawal = new Withdrawal()
                 {
                     Id = Guid.NewGuid(),
                     WithdrawnBy = access.Id,
@@ -216,18 +251,14 @@ namespace MiniWalletApi.Repositories
                 await _context.SaveChangesAsync();
 
                 //update balance
-                var wallet = FindByOwner(access.Id).Result;
-                if (wallet.Balance >= value.Amount)
-                {
-                    wallet.Balance = wallet.Balance - value.Amount;
-                    await Update(wallet);
-                }
-
-                return withdrawal;
+                wallet.Balance = wallet.Balance - value.Amount;
+                await Update(wallet);
+                
+                return BaseApiResponse.GetCreatedResponse(withdrawal);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return BaseApiResponse.GetErrorResponse(ex.Message, HttpStatusCode.InternalServerError);
             }
         }
 
