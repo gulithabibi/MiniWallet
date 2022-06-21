@@ -7,6 +7,7 @@ using MiniWalletApi.Dtos;
 using MiniWalletApi.Models;
 using MiniWalletApi.Repositories;
 using MiniWalletApi.Repositories.Interfaces;
+using MiniWalletApi.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +24,12 @@ namespace MiniWalletApi.Controllers
 
         //private CustomersRepository _custRepository = new CustomersRepository();
         private readonly ICustomerRespository _repository;
+        private readonly IAuthService _service;
 
-        public AuthController(ICustomerRespository repository)
+        public AuthController(ICustomerRespository repository, IAuthService service)
         {
             _repository = repository;
+            _service = service;
 
         }
         
@@ -36,6 +39,31 @@ namespace MiniWalletApi.Controllers
         public IActionResult Init(InitRqDto value)
         {
             var resp = _repository.GetInit(value.Customer_xid).Result;
+            return GetResult(resp);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("api/login")]
+        public IActionResult Login([FromBody] UserLoginDto userLogin)
+        {
+            var resp = _service.Login(userLogin).Result;
+            return GetResult(resp);
+        }
+
+        [HttpGet]
+        [Route("api/logout")]
+        public IActionResult Logout()
+        {
+            var resp = _service.Logout().Result;
+            return GetResult(resp);
+        }
+
+        [HttpPost]
+        [Route("api/register")]
+        public IActionResult Regiser()
+        {
+            var resp = _service.Register().Result;
             return GetResult(resp);
         }
     }
