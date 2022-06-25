@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MiniWalletApi.Filters;
 using MiniWalletApi.Models;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,8 @@ namespace MiniWalletApi.Controllers
     public class UserController : BaseApiController
     {
         [HttpGet("Admins")]
-        [Authorize(Roles = "Administrator")]
+        [TokenAuthenticationFilter]
+        //[Authorize(Roles = "Administrator")]        
         public IActionResult AdminsEndpoint()
         {
             var currentUser = GetCurrentUser();
@@ -23,7 +25,8 @@ namespace MiniWalletApi.Controllers
             return Ok($"Hi {currentUser.Fullname}, you are an {currentUser.Role}");
         }
 
-        [HttpGet("Sellers")]       [Authorize(Roles = "Seller")]
+        [HttpGet("Sellers")]       
+        [Authorize(Roles = "Seller")]
         public IActionResult SellersEndpoint()
         {
             var currentUser = GetCurrentUser();

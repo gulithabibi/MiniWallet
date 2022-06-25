@@ -62,6 +62,7 @@ namespace MiniWalletApi
             services.AddScoped<IDepositRespository, DepositRepository>();
             services.AddScoped<IWithdrawalRespository, WithdrawalRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserAuthRepository, UserAuthRepository>();
 
             //service
             services.AddScoped<IAuthService, AuthService>();

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using MiniWalletApi.Dtos;
+using MiniWalletApi.Filters;
 using MiniWalletApi.Models;
 using MiniWalletApi.Repositories;
 using MiniWalletApi.Repositories.Interfaces;
@@ -42,7 +43,6 @@ namespace MiniWalletApi.Controllers
             return GetResult(resp);
         }
 
-        [AllowAnonymous]
         [HttpPost]
         [Route("api/login")]
         public IActionResult Login([FromBody] UserLoginDto userLogin)
@@ -52,18 +52,22 @@ namespace MiniWalletApi.Controllers
         }
 
         [HttpGet]
+        [Authorize]
+        [TokenAuthenticationFilter]
         [Route("api/logout")]
         public IActionResult Logout()
         {
-            var resp = _service.Logout().Result;
+            var token = GetCurrentToken();
+            var resp = _service.Logout(token).Result;
             return GetResult(resp);
         }
 
         [HttpPost]
+        [TokenAuthenticationFilter]
         [Route("api/register")]
-        public IActionResult Regiser()
+        public IActionResult Register([FromBody] RegisterDto registerDto)
         {
-            var resp = _service.Register().Result;
+            var resp = _service.Register(registerDto).Result;
             return GetResult(resp);
         }
     }

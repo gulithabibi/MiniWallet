@@ -13,7 +13,7 @@ namespace MiniWalletApi.Repositories.Interfaces
         Task<List<User>> Find();
         Task<User> FindByID(Guid id);
         Task<User> FindByUsernamePwd(string username, string password);
-
+        bool IsUserExist(User user);
         Task<User> Create(User user);
         Task<User> Update(User user);
         Task Delete(Guid id);

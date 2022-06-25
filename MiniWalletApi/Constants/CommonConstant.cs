@@ -23,6 +23,13 @@ namespace MiniWalletApi.Constans
 			public const string WalletDisabled = "Currently wallet disabled";
 			public const string BalanceNotEnough = "Balance not enough";
 			
-		}
-	}
+
+            public static class Token {
+				public const string TokenNotValid = "Token not valid";
+				public const string TokenExpired = "Token has been expired";
+			}
+
+
+        }
+    }
 }

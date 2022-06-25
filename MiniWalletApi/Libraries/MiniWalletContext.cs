@@ -20,5 +20,6 @@ namespace MiniWalletApi.Libraries
         public DbSet<Deposit> Deposits { get; set; }
         public DbSet<Withdrawal> Withdrawals { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserAuth> UserAuths { get; set; }
     }
 }

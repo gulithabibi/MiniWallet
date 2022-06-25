@@ -66,5 +66,19 @@ namespace MiniWalletApi.Controllers
             }
             return null;
         }
+
+        protected string GetCurrentToken()
+        {
+            string token = string.Empty;
+            Microsoft.Extensions.Primitives.StringValues authToken;
+            HttpContext.Request.Headers.TryGetValue("Authorization", out authToken);
+            var _token = authToken.FirstOrDefault();
+            if (_token != null)
+            {
+                token = _token.Substring(7);
+            }
+
+            return token;
+        }
     }
 }

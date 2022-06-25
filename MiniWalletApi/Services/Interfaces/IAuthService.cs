@@ -12,8 +12,8 @@ namespace MiniWalletApi.Services.Interfaces
     {
         Task<BaseApiResponse> Login(UserLoginDto userLogin);
 
-        Task<BaseApiResponse> Logout();
+        Task<BaseApiResponse> Logout(string token);
 
-        Task<BaseApiResponse> Register();
+        Task<BaseApiResponse> Register(RegisterDto registerDto);
     }
 }
